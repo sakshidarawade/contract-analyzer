@@ -16,3 +16,4 @@ faiss-cpu==1.7.0
 googletrans==4.0.0-rc1
 speechrecognition==3.8.1
 gTTS==2.2.2
+pip install -U langchain-community
