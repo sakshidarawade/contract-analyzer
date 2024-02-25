@@ -1,6 +1,6 @@
 streamlit==0.89.0
 streamlit-chat
-PyAudio
+PyAudio.whl
 pyttsx3
 python-dotenv==0.19.2
 PyPDF2
