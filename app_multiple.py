@@ -17,11 +17,6 @@ from gtts import gTTS
 from io import BytesIO
 import pyttsx3 
 from googletrans import Translator
-import time
-
-# Define a function to generate unique keys
-def generate_unique_key():
-    return f"file_uploader_{int(time.time())}"
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -73,6 +68,8 @@ def get_conversation_chain(vectorstore):
 def handle_userinput(user_question, target_language,response_language):
     # Translate user's question to English (or desired target language)
     # translated_question = translate_text(user_question, target_language)
+    if "conversation" not in st.session_state or st.session_state.conversation is None:
+        st.session_state.conversation = lambda x: {"chat_history": []}
 
     response = st.session_state.conversation({'question': user_question})
     st.session_state.chat_history = response['chat_history']
@@ -81,18 +78,14 @@ def handle_userinput(user_question, target_language,response_language):
         if i % 2 == 0:
             st.write(user_template.replace(
                 "{{MSG}}", message.content), unsafe_allow_html=True)
-            
         else:
             # Translate bot's response back to the user's language
             translated_response = translate_text(message.content, response_language)
             bot_response = bot_template.replace("{{MSG}}", translated_response)
             st.write(bot_response, unsafe_allow_html=True)
-    
-
             # Add a "Talk Back" button for each bot response
             talk_back_button_key = f"talk_back_button_{i}"
             talk_back_button = st.button(f"Talk Back", key=talk_back_button_key)
-
             # If the "Talk Back" button is clicked, read out the bot response
             if talk_back_button:
                 engine = pyttsx3.init()
@@ -115,8 +108,6 @@ def handle_microphone_input():
     except sr.RequestError as e:
         st.session_state.user_question = f"Error with the speech recognition service; {e}"
 
-    # st.text("You said: " + st.session_state.user_question)
-
 def main():
     load_dotenv()
     st.set_page_config(page_title="Contract Bot",
@@ -126,13 +117,6 @@ def main():
     
     target_language = st.selectbox("Select Document language (Target)", ["en", "es", "fr", "de"], key="target_language")
     response_language = st.selectbox("Select Document language (Response)", ["en", "es", "fr", "de"], key="response_language")
-
-
-    if "conversation" not in st.session_state or st.session_state.conversation is None:
-        vectorstore = None  # Define a placeholder for the vectorstore
-        st.session_state.conversation = lambda x: {"chat_history": []}  # Define a placeholder conversation function
-    else:
-        vectorstore = st.session_state.conversation_chain.retriever  # Get the vectorstore from the conversation_chain
 
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
@@ -149,23 +133,26 @@ def main():
     user_question = st.text_input("Ask a question about your documents:", value=st.session_state.user_question)
 
     if user_question:
-        handle_userinput(user_question,target_language,response_language)
+        handle_userinput(user_question, target_language, response_language)
 
     with st.sidebar:
         st.subheader("Your documents")
         pdf_docs = st.file_uploader(
-            "Upload your PDFs here and click on 'Process'", accept_multiple_files=True, key=generate_unique_key()
+            "Upload your PDFs here and click on 'Process'", accept_multiple_files=True
         )
         if st.button("Process"):
             with st.spinner("Processing"):
+                # get pdf text
                 raw_text = get_pdf_text(pdf_docs)
+
+                # get the text chunks
                 text_chunks = get_text_chunks(raw_text)
-                if vectorstore is None:
-                    vectorstore = get_vectorstore(text_chunks)
-                    st.session_state.conversation_chain = get_conversation_chain(vectorstore)
-                else:
-                    st.session_state.conversation_chain.update_retriever(vectorstore)
+
+                # create vector store
+                vectorstore = get_vectorstore(text_chunks)
+
+                # create conversation chain
+                st.session_state.conversation = get_conversation_chain(vectorstore)
 
 if __name__ == '__main__':
     main()
-
