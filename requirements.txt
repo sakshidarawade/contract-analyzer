@@ -1,6 +1,7 @@
 streamlit==0.89.0
 streamlit-chat
-pyaudio==0.2.11 
+https://github.com/sakshidarawade/contract-analyzer/blob/main/pa_stable_v190700_20210406.tgz
+pyaudio 
 pyttsx3
 python-dotenv==0.19.2
 PyPDF2
