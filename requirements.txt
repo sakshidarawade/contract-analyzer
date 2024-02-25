@@ -2,7 +2,7 @@ streamlit==0.89.0
 # Replace 'streamlit-chat' with the correct package name if it's different
 streamlit-chat
 # Direct link to the pyaudio source
-https://github.com/sakshidarawade/contract-analyzer/blob/main/pa_stable_v190700_20210406.tgz
+https://github.com/PortAudio/portaudio/wiki/pa_stable_v190700_20210307
 pyttsx3
 python-dotenv==0.19.2
 PyPDF2
