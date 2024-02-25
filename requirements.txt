@@ -5,7 +5,7 @@ streamlit-chat
 # You can install it using a package manager instead.
 # If you must install it from source, you need to provide a direct link to a specific version release or an archive file.
 # https://pypi.org/project/PyAudio/
-pip install click==7.1.2
+
 pyttsx3
 python-dotenv==0.19.2
 PyPDF2
