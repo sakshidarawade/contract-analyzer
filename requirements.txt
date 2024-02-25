@@ -1,5 +1,6 @@
 streamlit==0.89.0
 streamlit-chat
+pyttsx3
 python-dotenv==0.19.2
 PyPDF2
 Pillow==9.0.0
