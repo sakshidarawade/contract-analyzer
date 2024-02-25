@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from PIL import Image
 import pytesseract
+from langchain.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings
 from langchain.vectorstores import FAISS
