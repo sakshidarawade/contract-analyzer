@@ -1,5 +1,4 @@
-streamlit==0.82.0
-streamlit --upgrade
+streamlit==24.0
 python-dotenv==0.19.2
 PyPDF2==1.26.0
 Pillow==9.0.0
