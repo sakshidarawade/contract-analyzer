@@ -1,8 +1,10 @@
 streamlit==0.89.0
 # Replace 'streamlit-chat' with the correct package name if it's different
 streamlit-chat
-# Direct link to the pyaudio source
-https://github.com/PortAudio/portaudio/wiki/pa_stable_v190700_20210307
+# PyAudio installation from source is not recommended. 
+# You can install it using a package manager instead.
+# If you must install it from source, you need to provide a direct link to a specific version release or an archive file.
+# https://pypi.org/project/PyAudio/
 pyttsx3
 python-dotenv==0.19.2
 PyPDF2
