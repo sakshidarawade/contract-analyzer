@@ -128,10 +128,15 @@ def main():
     response_language = st.selectbox("Select Document language (Response)", ["en", "es", "fr", "de"], key="response_language")
 
 
-    if "conversation" not in st.session_state:
-        st.session_state.conversation = None
+    if "conversation" not in st.session_state or st.session_state.conversation is None:
+        vectorstore = None  # Define a placeholder for the vectorstore
+        st.session_state.conversation = lambda x: {"chat_history": []}  # Define a placeholder conversation function
+    else:
+        vectorstore = st.session_state.conversation_chain.retriever  # Get the vectorstore from the conversation_chain
+
     if "chat_history" not in st.session_state:
-        st.session_state.chat_history = None
+        st.session_state.chat_history = []
+
     if "user_question" not in st.session_state:
         st.session_state.user_question = ""
 
@@ -155,9 +160,12 @@ def main():
             with st.spinner("Processing"):
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
-                vectorstore = get_vectorstore(text_chunks)
-                st.session_state.conversation_chain = get_conversation_chain(
-                    vectorstore)
+                if vectorstore is None:
+                    vectorstore = get_vectorstore(text_chunks)
+                    st.session_state.conversation_chain = get_conversation_chain(vectorstore)
+                else:
+                    st.session_state.conversation_chain.update_retriever(vectorstore)
 
 if __name__ == '__main__':
     main()
+
